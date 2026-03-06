@@ -1,0 +1,1400 @@
+---
+title: "AMST_O_Y_no_exclusions"
+output: html_document
+date: '2022-09-26'
+---
+
+```{r} 
+##LOADING PACKAGES
+library(tidyverse)
+library(gtools)
+library(plyr)
+library(magrittr)
+library(dplyr)
+library(lme4)
+library(ggplot2)
+library(tidyr)
+library(stringr)
+```
+
+
+```{r}
+####NEED TO CHANGE THE ERROR BARS ON ALL OF THE GRAPHS########
+```
+
+
+```{r}
+#LOADING IN DATA
+multmerge = function(mypath){
+  filenames=list.files(path=mypath, full.names=TRUE)
+  datalist = lapply(filenames, function(x){read.csv(file=x,header=T)})
+  Reduce(function(x,y) {merge(x,y,all = TRUE)}, datalist)
+}
+full_data = multmerge("/Users/kyliealberts/Desktop/all_251_data/AMST_Y_8_26/AMS-Data/Output")
+
+scam_data <- full_data
+
+#LOADING IN DATA
+multmerge = function(mypath){
+  filenames=list.files(path=mypath, full.names=TRUE)
+  datalist = lapply(filenames, function(x){read.csv(file=x,header=T)})
+  Reduce(function(x,y) {merge(x,y,all = TRUE)}, datalist)
+}
+full_data_1 = multmerge("/Users/kyliealberts/Desktop/all_251_data/AMST_O/AMST_O-Data/Output")
+
+scam_data_o <- full_data_1
+
+
+```
+
+```{r}
+demographics <- read.csv("/Users/kyliealberts/Desktop/all_251_data/AMST_Y_8_26/AMS-Data/DemographicsData.csv")
+scam_data <- merge(scam_data, demographics, by="ID")
+
+demographics_o <- read.csv("/Users/kyliealberts/Desktop/all_251_data/AMST_O/AMST_O-Data/DemographicsData.csv")
+scam_data_o <- merge(scam_data_o, demographics_o, by="ID")
+```
+
+
+```{r}
+#excluding based on later stuff, have updated with AMST
+#pilot
+scam_data <- subset(scam_data, scam_data$ID!= "gg9qtlnzr5") 
+scam_data <- subset(scam_data, scam_data$ID!= "8fp0ci8run")
+scam_data <- subset(scam_data, scam_data$ID!= "na15z6wxbc")
+
+#scam_data <- subset(scam_data, scam_data$ID!= "a502psosla")
+#scam_data <- subset(scam_data, scam_data$ID!= "jkx0t16gd3")
+#scam_data <- subset(scam_data, scam_data$ID!= "lm093om60j")
+#scam_data <- subset(scam_data, scam_data$ID!= "r3gn88l8p2")
+#scam_data <- subset(scam_data, scam_data$ID!= "rmv77p0cys")
+#scam_data <- subset(scam_data, scam_data$ID!= "m1jxy9ewtj")
+
+#didnt complete the study
+scam_data <- subset(scam_data, scam_data$ID!= "erg7crn17p")
+
+
+
+	
+
+#exluding based on demographics
+
+scam_data <- filter(scam_data, Age < 30)
+scam_data <- filter(scam_data, Age >= 18)
+
+
+
+data.frame(table(scam_data$Gender))
+
+mean_age<- scam_data %>%
+  group_by(Gender) %>%
+  summarise_at(vars(Age), list(name = mean))
+
+counts <- ddply(scam_data, .(scam_data$ID, scam_data$Gender), nrow)
+names(counts) <- c("ID", "Gender", "Freq")
+
+data.frame(table(counts$Gender))
+
+
+mean(scam_data$Age) ####need to exclude some people#####
+sd(scam_data$Age)
+range(scam_data$Age)
+write.csv(scam_data, file= "check_AMST_Y_no_ex.csv")
+
+```
+
+```{r}
+#excluding based on later stuff, did update
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "08pcxk5vpk")
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "0tbt580ef5")
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "ca4wudnyrh")
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "n4e50wb4f0")
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "osb5575q23")
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "wh7vuph04j")
+#scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "xbehkk4udq")
+#demographcis
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "9ea6ztj9lm")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "3fgbvol45v")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "0kyp175e26")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "nul1bdyks5")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "6571bugjml")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "azax4p0wdr")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "khhpbn0ryr")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "khhpbn0ryr")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "ugr3cg6gy5")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "i4vnte4q6h")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "hvsounmqmk")
+
+#based check_conditions_o
+#not completing study
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "rg8tv97ok6")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "pvedp9b0ws")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "l0olurud2e")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "3fgbvol45v")
+
+#did not pass captcha
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "n4e50wb4f0")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "xmdqlcnq92")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "679m2ufdyj")
+scam_data_o <- subset(scam_data_o, scam_data_o$ID!= "osb5575q23")
+
+
+
+
+#exluding based on demographics
+
+scam_data_o <- filter(scam_data_o, Age > 54)
+
+check_math_o <- scam_data_o %>% select(ID,Procedure.Text,Response.Response)
+
+check_math_o <- mutate(check_math_o, 
+                    text = if_else(str_detect(check_math_o$Procedure.Text, "solve"), "prompt","False")) 
+check_math_o <- subset(check_math_o, check_math_o$text== "prompt")
+
+check_age_o <-scam_data_o %>% select(ID,Procedure.Text,Response.Response, Age) 
+check_age_o <- mutate(check_age_o, 
+                    text = if_else(str_detect(check_age_o$Procedure.Text, "birthday"), "prompt","False")) 
+check_age_o <- subset(check_age_o, check_age_o$text== "prompt")
+
+data.frame(table(scam_data_o$Gender))
+
+mean_age<- scam_data_o %>%
+  group_by(Gender) %>%
+  summarise_at(vars(Age), list(name = mean))
+
+counts_o <- ddply(scam_data_o, .(scam_data_o$ID, scam_data_o$Gender), nrow)
+names(counts_o) <- c("ID", "Gender", "Freq")
+
+data.frame(table(counts_o$Gender))
+
+
+mean(scam_data_o$Age) ####need to exclude some people#####
+sd(scam_data_o$Age)
+range(scam_data_o$Age)
+
+write.csv(scam_data_o, file= "check_o_AMST_no_ex.csv")
+
+```
+
+
+
+
+```{r}
+##AVERAGE CORRECT
+face_test <- scam_data %>% subset(Procedure.Trial.Type == "faceID")
+
+face_test <- face_test %>%
+  select(Trial, Stimuli.Answer, Response.Response,ID)
+
+#this detects the strings laide out below and if it doesn't find it it labels it as false
+face_test <- mutate(face_test, 
+                    answer1 = if_else(str_detect(face_test$Stimuli.Answer, "Donation"), "Donation","False")) 
+face_test <- mutate(face_test, 
+                    answer2 = if_else(str_detect(face_test$Stimuli.Answer, "Scam"), "Scam","False")) 
+face_test <- mutate(face_test, 
+                    answer3 = if_else(str_detect(face_test$Stimuli.Answer, "Neutral"), "Neutral", "False"))
+#change all false observations to NA
+face_test[ face_test == "False" ] <- NA
+
+face_test <- face_test %>% mutate(answer = coalesce(answer1,answer2,answer3))
+
+face_test$accurate = ifelse(face_test$answer == face_test$Response.Response, 1,0) 
+
+mean(face_test$accurate)
+
+figure1<-face_test%>%
+  group_by(ID,answer) %>%
+  summarise_at(vars(accurate), list(averagecorrect = mean)) %>% 
+  as.data.frame()
+```
+
+```{r}
+#excluding
+check<-face_test%>%
+  group_by(ID) %>%
+  summarise_at(vars(accurate), list(averagecorrect = mean))
+
+check <- check %>% subset(averagecorrect < .33333)
+check_conditions <- figure1 %>%  subset(averagecorrect < .10)
+#excluding if people were below chance in two of the conditions
+
+#excluding if people are overall below chance
+#excluding if 
+```
+
+
+```{r}
+##AVERAGE CORRECT
+face_test_o <- scam_data_o %>% subset(Procedure.Trial.Type == "faceID")
+
+face_test_o <- face_test_o %>%
+  select(Trial, Stimuli.Answer, Response.Response,ID)
+
+#this detects the strings laide out below and if it doesn't find it it labels it as false
+face_test_o <- mutate(face_test_o, 
+                    answer1 = if_else(str_detect(face_test_o$Stimuli.Answer, "Donation"), "Donation","False")) 
+face_test_o <- mutate(face_test_o, 
+                    answer2 = if_else(str_detect(face_test_o$Stimuli.Answer, "Scam"), "Scam","False")) 
+face_test_o <- mutate(face_test_o, 
+                    answer3 = if_else(str_detect(face_test_o$Stimuli.Answer, "Neutral"), "Neutral", "False"))
+#change all false observations to NA
+face_test_o[ face_test_o == "False" ] <- NA
+
+face_test_o <- face_test_o %>% mutate(answer = coalesce(answer1,answer2,answer3))
+
+face_test_o$accurate = ifelse(face_test_o$answer == face_test_o$Response.Response, 1,0) 
+
+mean(face_test_o$accurate)
+
+figure1_o<-face_test_o%>%
+  group_by(ID,answer) %>%
+  summarise_at(vars(accurate), list(averagecorrect = mean)) %>% 
+  as.data.frame()
+```
+
+```{r}
+#excluding
+check_o<-face_test_o%>%
+  group_by(ID) %>%
+  summarise_at(vars(accurate), list(averagecorrect = mean))
+
+check_o <- check_o %>% subset(averagecorrect < .33333)
+check_conditions_o <- figure1_o %>%  subset(averagecorrect < .10)
+#excluding if people were below chance in two of the conditions
+
+#excluding if people are overall below chance
+#excluding if 
+```
+
+
+
+```{r}
+#write.csv(figure1, file= "bar graph_2.csv")
+
+#figure_2 <- read.csv("/Users/kyliealberts/Desktop/bar graph_2.csv")
+
+stand <- data.frame(
+  answer=c("Donation", "Scam", "Neutral"),
+  sd=c(.205,.244,.234) ##uUPDATE!!!!!
+)
+
+figure_sd<- merge(figure1, stand, by = "answer")
+
+figure23<-ggplot(data=figure1, aes(x=answer,y=averagecorrect)) +
+  geom_bar(stat="summary",fun.y="mean", fill = "dodgerblue4", color= "black" ) + 
+  labs(x = "Condition", y = "Average Correct", 
+       title= "Average Correct") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,1) 
+  
+  
+figure23
+
+figure_22 <- figure1 %>% 
+  select(answer, averagecorrect)
+
+average <- figure_22 %>% 
+  group_by(answer) %>% summarise_at(vars(averagecorrect), list(averagecorrect = mean))
+
+figure_average<- merge(average, stand, by = "answer")
+
+figure_average_y<-ggplot(data=figure_average, aes(x=answer,y=averagecorrect)) +
+  geom_bar(stat="identity", fill = "#4682B4", color= "black" ) + 
+  labs(x = "Condition", y = "Average Correct Responses", 
+       title= "Accuracy") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,1) +
+  geom_errorbar( aes(x=answer, ymin=averagecorrect-sd, ymax=averagecorrect+sd), width=0.4, colour="black", alpha=0.9, size=.5)
+  
+figure_average_y
+
+```
+
+
+```{r}
+#write.csv(figure1, file= "bar graph_2.csv")
+
+#figure_2 <- read.csv("/Users/kyliealberts/Desktop/bar graph_2.csv")
+
+stand_o <- data.frame(
+  answer=c("Donation", "Scam", "Neutral"),
+  sd=c(.205,.244,.234) ##uUPDATE!!!!!
+)
+
+figure_sd_o<- merge(figure1_o, stand_o, by = "answer")
+
+figure23_o<-ggplot(data=figure1_o, aes(x=answer,y=averagecorrect)) +
+  geom_bar(stat="summary",fun.y="mean", fill = "dodgerblue4", color= "black" ) + 
+  labs(x = "Condition", y = "Average Correct", 
+       title= "Average Correct") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,1) 
+  
+  
+figure23_o
+
+figure_22_o <- figure1_o %>% 
+  select(answer, averagecorrect)
+
+average_o <- figure_22_o %>% 
+  group_by(answer) %>% summarise_at(vars(averagecorrect), list(averagecorrect = mean))
+
+figure_average_o<- merge(average_o, stand_o, by = "answer")
+
+figure_average_o_<-ggplot(data=figure_average_o, aes(x=answer,y=averagecorrect)) +
+  geom_bar(stat="identity", fill = "#4682B4", color= "black" ) + 
+  labs(x = "Condition", y = "Average Correct Responses", 
+       title= "Accuracy") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,1) +
+  geom_errorbar( aes(x=answer, ymin=averagecorrect-sd, ymax=averagecorrect+sd), width=0.4, colour="black", alpha=0.9, size=.5)
+  
+figure_average_o_
+
+```
+
+
+
+```{r}
+#
+scam_base <- scam_data %>% subset(Procedure.Trial.Type == "faceID")
+scam_base <- scam_base %>% select(Stimuli.Answer,Stimuli.Cue,Response.Response,ID)
+
+scam_base <- mutate(scam_base, 
+                    answer1 = if_else(str_detect(scam_base$Stimuli.Answer, "Donation"), "Donation","False")) 
+scam_base <- mutate(scam_base, 
+                    answer2 = if_else(str_detect(scam_base$Stimuli.Answer, "Scam"), "Scam","False")) 
+scam_base <- mutate(scam_base, 
+                    answer3 = if_else(str_detect(scam_base$Stimuli.Answer, "Neutral"), "Neutral", "False"))
+#change all false observations to NA
+scam_base[ scam_base == "False" ] <- NA
+
+scam_base <- scam_base %>% mutate(answer = coalesce(answer1,answer2,answer3))
+
+scam_base$accurate = ifelse(scam_base$answer == scam_base$Response.Response, 1,0) 
+
+```
+
+```{r}
+#
+scam_base_o <- scam_data_o %>% subset(Procedure.Trial.Type == "faceID")
+scam_base_o <- scam_base_o %>% select(Stimuli.Answer,Stimuli.Cue,Response.Response,ID)
+
+scam_base_o <- mutate(scam_base_o, 
+                    answer1 = if_else(str_detect(scam_base_o$Stimuli.Answer, "Donation"), "Donation","False")) 
+scam_base_o <- mutate(scam_base_o, 
+                    answer2 = if_else(str_detect(scam_base_o$Stimuli.Answer, "Scam"), "Scam","False")) 
+scam_base_o <- mutate(scam_base_o, 
+                    answer3 = if_else(str_detect(scam_base_o$Stimuli.Answer, "Neutral"), "Neutral", "False"))
+#change all false observations to NA
+scam_base_o[ scam_base_o == "False" ] <- NA
+
+scam_base_o <- scam_base_o %>% mutate(answer = coalesce(answer1,answer2,answer3))
+
+scam_base_o$accurate = ifelse(scam_base_o$answer == scam_base_o$Response.Response, 1,0) 
+
+```
+
+```{r}
+#including the correct and incorrect
+honesty_rating <- scam_data %>% subset(Procedure.Trial.Type == "StudyPic")
+
+honesty_rating <- honesty_rating %>%
+  select(Trial, Stimuli.Cue, Response.post1_JOL, ID)
+
+honesty_2 <- left_join(honesty_rating, scam_base)
+
+honesty_2 <- honesty_2 %>% mutate(condition = case_when(Trial<126 ~ "Pre", 
+                                                        Trial>51 ~ "Post"))
+honesty_check <- honesty_2
+
+two.way <- aov(Response.post1_JOL ~ condition + Stimuli.Answer, data = honesty_2)
+summary(two.way)
+
+#making answer simpler
+honesty_2 <- honesty_2 %>%
+  select(Trial, Stimuli.Cue, Response.post1_JOL, ID, accurate,condition,answer)
+
+honesty_4 <- honesty_2
+
+#honesty_2w <- honesty_2 %>% drop_na()
+
+honesty_2$answer[is.na(honesty_2$answer)] <- "None" 
+
+#combine the id and the stimuli cue
+#honesty_2$ID_stimulicue <- str_c(honesty_2$ID,'',honesty_2$Stimuli.Cue)
+
+honesty_2 <- honesty_2 %>%
+  select(ID, condition, answer, Response.post1_JOL)
+
+honesty_3 <- honesty_2
+
+
+which(duplicated(honesty_2))
+
+honesty_2$answercond <- str_c(honesty_2$answer,'',honesty_2$condition)
+
+
+#write.csv(honesty_2,'honesty_2_pilotlong.csv')
+
+honesty_2 <- honesty_2 %>%
+  select(ID, answercond, Response.post1_JOL)
+
+#calculates mean rt for each condition of each subject
+honesty <- aggregate(honesty_2$Response.post1_JOL,
+                     by = list(honesty_2$ID,
+                               honesty_2$answercond),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(honesty) <- c("Subject", "condition", "JOL")
+#orders the data by subject
+honesty <- honesty[order(honesty$Subject), ]
+#spreads out the conditions into different columns and includes their reaction times
+honesty<-spread(honesty, condition, JOL)
+
+#donation<- honesty %>%
+#  select(Subject, DonationPre, DonationPost)
+
+
+
+#writes a csv to be used in JASP
+write.csv(honesty, file= "honesty_AMST_young_no_ex.csv")
+```
+
+```{r}
+#including the correct and incorrect
+honesty_rating_o <- scam_data_o %>% subset(Procedure.Trial.Type == "StudyPic")
+
+honesty_rating_o <- honesty_rating_o %>%
+  select(Trial, Stimuli.Cue, Response.post1_JOL, ID)
+
+honesty_2_o <- left_join(honesty_rating_o, scam_base_o)
+
+honesty_2_o <- honesty_2_o %>% mutate(condition = case_when(Trial<126 ~ "Pre", 
+                                                        Trial>52 ~ "Post"))
+honesty_check_o <- honesty_2_o
+
+two.way_o <- aov(Response.post1_JOL ~ condition + Stimuli.Answer, data = honesty_2_o)
+summary(two.way_o)
+
+#making answer simpler
+honesty_2_o <- honesty_2_o %>%
+  select(Trial, Stimuli.Cue, Response.post1_JOL, ID, accurate,condition,answer)
+
+honesty_4_o <- honesty_2_o
+
+#honesty_2w <- honesty_2 %>% drop_na()
+
+honesty_2_o$answer[is.na(honesty_2_o$answer)] <- "None" 
+
+#combine the id and the stimuli cue
+#honesty_2$ID_stimulicue <- str_c(honesty_2$ID,'',honesty_2$Stimuli.Cue)
+
+honesty_2_o <- honesty_2_o %>%
+  select(ID, condition, answer, Response.post1_JOL)
+
+honesty_3_o <- honesty_2_o
+
+
+which(duplicated(honesty_2_o))
+
+honesty_2_o$answercond <- str_c(honesty_2_o$answer,'',honesty_2_o$condition)
+
+
+#write.csv(honesty_2,'honesty_2_pilotlong.csv')
+
+honesty_2_o <- honesty_2_o %>%
+  select(ID, answercond, Response.post1_JOL)
+
+#calculates mean rt for each condition of each subject
+honesty_o <- aggregate(honesty_2_o$Response.post1_JOL,
+                     by = list(honesty_2_o$ID,
+                               honesty_2_o$answercond),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(honesty_o) <- c("Subject", "condition", "JOL")
+#orders the data by subject
+honesty_o <- honesty_o[order(honesty_o$Subject), ]
+#spreads out the conditions into different columns and includes their reaction times
+honesty_o<-spread(honesty_o, condition, JOL)
+
+#donation<- honesty %>%
+#  select(Subject, DonationPre, DonationPost)
+
+
+
+#writes a csv to be used in JASP
+write.csv(honesty_o, file= "honesty_AMST_older_no_ex.csv")
+```
+
+
+```{r}
+figure_honesty<-ggplot(data=honesty_2, aes(x=answercond,y=Response.post1_JOL)) +
+  geom_bar(stat="summary",fun.y="mean",fill='#cce6ff', color= "black" ) + 
+  labs(x = "Condition", y = "Average Correct", 
+       title= "Average Correct") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  )
+figure_honesty
+
+honesty_3$answer <- factor(honesty_3$answer, levels = c("Scam", "Donation", "Neutral", "None"))
+
+stand_honesty <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral", "None", "None"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.161, .183, .158, .204, .143, .150, .154, .170)
+)
+
+colnames(honesty_3)[colnames(honesty_3) == 'condition'] <- 'Time'
+
+average_honesty <- honesty_3 %>% 
+  group_by(answer, Time) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_honesty$Time <- factor(average_honesty$Time, levels = c("Pre", "Post"))
+
+figure_honesty_1<- merge(average_honesty, stand_honesty, by=c("answer","Time"))
+
+figure_honesty1 <- ggplot(data=figure_honesty_1, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_honesty1
+
+figure_honesty1_bw <- ggplot(data=figure_honesty_1, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Honesty Rating", 
+       title= "Honesty Ratings") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_honesty1_bw
+```
+
+```{r}
+figure_honesty_o<-ggplot(data=honesty_2_o, aes(x=answercond,y=Response.post1_JOL)) +
+  geom_bar(stat="summary",fun.y="mean",fill='#cce6ff', color= "black" ) + 
+  labs(x = "Condition", y = "Average Correct", 
+       title= "Average Correct") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  )
+figure_honesty_o
+
+honesty_3_o$answer <- factor(honesty_3_o$answer, levels = c("Scam", "Donation", "Neutral", "None"))
+
+stand_honesty_o <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral", "None", "None"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.140,.132, .144, .229, .148, .146, .122,.145)
+)
+
+colnames(honesty_3_o)[colnames(honesty_3_o) == 'condition'] <- 'Time'
+
+average_honesty_o <- honesty_3_o %>% 
+  group_by(answer, Time) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_honesty_o$Time <- factor(average_honesty_o$Time, levels = c("Pre", "Post"))
+
+figure_honesty_1_o<- merge(average_honesty_o, stand_honesty_o, by=c("answer","Time"))
+
+figure_honesty1_o <- ggplot(data=figure_honesty_1_o, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_honesty1_o
+
+figure_honesty1_o_bw <- ggplot(data=figure_honesty_1_o, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Honesty Rating", 
+       title= "Honesty Ratings") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_honesty1_o_bw
+```
+
+```{r}
+#including the correct and incorrect
+confidence <- scam_data %>% subset(Procedure.Trial.Type == "faceID")
+
+confidence<- confidence %>%
+  select(Trial, Stimuli.Cue, Response.post1_JOL, ID)
+
+confidence_2 <- left_join(confidence, scam_base)
+
+confidence_incorrect <- confidence_2
+
+confidence_2<- confidence_2 %>%
+  select(ID, answer, Response.post1_JOL)
+
+figure_confidence<-ggplot(data=confidence_2, aes(x=answer,y=Response.post1_JOL)) +
+  geom_bar(stat="summary",fun.y="mean", fill = "dodgerblue4", color= "black" ) + 
+  labs(x = "Condition", y = "Average Confidence Ratings", 
+       title= "Average Confidence Ratings") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,10)
+figure_confidence
+
+
+confidence_3 <- aggregate(confidence_2$Response.post1_JOL,
+                     by = list(confidence_2$ID,
+                               confidence_2$answer),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(confidence_3) <- c("Subject", "condition", "confidence")
+#orders the data by subject
+confidence_3 <- confidence_3[order(confidence_3$Subject), ]
+#spreads out the conditions into different columns 
+confidence_4<-spread(confidence_3, condition, confidence)
+
+write.csv(confidence_3, file= "confidence_long_AMST_young_no_ex.csv")
+write.csv(confidence_4, file= "confidence_wide_AMST_young_no_ex.csv")
+
+
+stand_conf <- data.frame(
+  condition=c("Donation", "Scam", "Neutral"),
+  sd=c(1.65,1.83,1.78) ###UPDATE
+)
+
+
+confidence_average <- confidence_3 %>% 
+  select(condition, confidence)
+
+confidence_average <- confidence_average %>% 
+  group_by(condition) %>% summarise_at(vars(confidence), list(confidence = mean))
+
+figure_conf_1<- merge(confidence_average, stand_conf, by = "condition")
+
+figure_conf<-ggplot(data=figure_conf_1, aes(x=condition,y=confidence)) +
+  geom_bar(stat="identity", fill = "#4682B4", color= "black" ) + 
+  labs(x = "Condition", y = "Confidence", 
+       title= "Confidence Rating") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,10) +
+  geom_errorbar( aes(x=condition, ymin=confidence-sd, ymax=confidence+sd), width=0.4, colour="black", alpha=0.9, size=.5)
+  
+figure_conf
+```
+
+```{r}
+#including the correct and incorrect
+confidence_o <- scam_data_o %>% subset(Procedure.Trial.Type == "faceID")
+
+confidence_o<- confidence_o %>%
+  select(Trial, Stimuli.Cue, Response.post1_JOL, ID)
+
+confidence_2_o <- left_join(confidence_o, scam_base_o)
+
+confidence_incorrect_o <- confidence_2_o
+
+confidence_2_o<- confidence_2_o %>%
+  select(ID, answer, Response.post1_JOL)
+
+figure_confidence_o<-ggplot(data=confidence_2_o, aes(x=answer,y=Response.post1_JOL)) +
+  geom_bar(stat="summary",fun.y="mean", fill = "dodgerblue4", color= "black" ) + 
+  labs(x = "Condition", y = "Average Confidence Ratings", 
+       title= "Average Confidence Ratings") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,10)
+figure_confidence_o
+
+
+confidence_3_o <- aggregate(confidence_2_o$Response.post1_JOL,
+                     by = list(confidence_2_o$ID,
+                               confidence_2_o$answer),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(confidence_3_o) <- c("Subject", "condition", "confidence")
+#orders the data by subject
+confidence_3_o <- confidence_3_o[order(confidence_3_o$Subject), ]
+#spreads out the conditions into different columns 
+confidence_4_o<-spread(confidence_3_o, condition, confidence)
+
+write.csv(confidence_3_o, file= "confidence_long_AMST_older_no_ex.csv")
+write.csv(confidence_4_o, file= "confidence_wide_AMST_older_no_ex.csv")
+
+
+stand_conf_o <- data.frame(
+  condition=c("Donation", "Scam", "Neutral"),
+  sd=c(1.65,1.83,1.78) ###UPDATE
+)
+
+
+confidence_average_o <- confidence_3_o %>% 
+  select(condition, confidence)
+
+confidence_average_o <- confidence_average_o %>% 
+  group_by(condition) %>% summarise_at(vars(confidence), list(confidence = mean))
+
+figure_conf_1_o<- merge(confidence_average_o, stand_conf_o, by = "condition")
+
+figure_conf_o<-ggplot(data=figure_conf_1_o, aes(x=condition,y=confidence)) +
+  geom_bar(stat="identity", fill = "#4682B4", color= "black" ) + 
+  labs(x = "Condition", y = "Confidence", 
+       title= "Confidence Rating") + theme(panel.background = 
+                                                                    element_rect(fill= "white", colour = "black")  ) +
+   ylim(0,10) +
+  geom_errorbar( aes(x=condition, ymin=confidence-sd, ymax=confidence+sd), width=0.4, colour="black", alpha=0.9, size=.5)
+  
+figure_conf_o
+```
+
+
+```{r}
+###ACCURATE ONLY
+
+accurate_only <- honesty_4 %>% subset(accurate == 1)
+
+accurate_only<- accurate_only %>%
+  select(ID, answer, condition, Response.post1_JOL)
+
+accurate_long <- accurate_only
+
+accurate_only$answercond <- str_c(accurate_only$answer,'',accurate_only$condition)
+
+
+
+accurate_only <- accurate_only %>%
+  select(ID, answercond, Response.post1_JOL)
+
+#calculates mean rt for each condition of each subject
+accurate_only_1 <- aggregate(accurate_only$Response.post1_JOL,
+                     by = list(accurate_only$ID,
+                               accurate_only$answercond),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(accurate_only_1) <- c("Subject", "condition", "JOL")
+#orders the data by subject
+accurate_only_1 <- accurate_only_1[order(accurate_only_1$Subject), ]
+#spreads out the conditions into different columns and includes their reaction times
+accurate_only_1<-spread(accurate_only_1, condition, JOL)
+
+#donation<- honesty %>%
+#  select(Subject, DonationPre, DonationPost)
+
+
+
+#writes a csv to be used in JASP
+write.csv(accurate_only_1, file= "accurate_only_AMST_young_no_ex.csv")
+```
+
+```{r}
+###ACCURATE ONLY
+
+accurate_only_o <- honesty_4_o %>% subset(accurate == 1)
+
+accurate_only_o<- accurate_only_o %>%
+  select(ID, answer, condition, Response.post1_JOL)
+
+accurate_long_o <- accurate_only_o
+
+accurate_only_o$answercond <- str_c(accurate_only_o$answer,'',accurate_only_o$condition)
+
+
+
+accurate_only_o <- accurate_only_o %>%
+  select(ID, answercond, Response.post1_JOL)
+
+#calculates mean rt for each condition of each subject
+accurate_only_1_o <- aggregate(accurate_only_o$Response.post1_JOL,
+                     by = list(accurate_only_o$ID,
+                               accurate_only_o$answercond),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(accurate_only_1_o) <- c("Subject", "condition", "JOL")
+#orders the data by subject
+accurate_only_1_o <- accurate_only_1_o[order(accurate_only_1_o$Subject), ]
+#spreads out the conditions into different columns and includes their reaction times
+accurate_only_1_o<-spread(accurate_only_1_o, condition, JOL)
+
+#donation<- honesty %>%
+#  select(Subject, DonationPre, DonationPost)
+
+
+
+#writes a csv to be used in JASP
+write.csv(accurate_only_1_o, file= "accurate_only_AMST_older_no_ex.csv")
+```
+
+
+
+```{r}
+###ACCURATE ONLY GRAPH
+
+accurate_long$answer <- factor(accurate_long$answer, levels = c("Scam", "Donation", "Neutral"))
+
+stand_honesty_accurate <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.161, .192, .169, .225, .159, .173)
+)
+
+colnames(accurate_long)[colnames(accurate_long) == 'condition'] <- 'Time'
+
+average_accurate <- accurate_long %>% 
+  group_by(answer, Time) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_accurate$Time <- factor(average_accurate$Time, levels = c("Pre", "Post"))
+
+figure_accurate_1<- merge(average_accurate, stand_honesty_accurate, by=c("answer","Time"))
+
+figure_accurate1 <- ggplot(data=figure_accurate_1, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings for Accurate Responses Only") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_accurate1
+
+figure_accurate1_bw <- ggplot(data=figure_accurate_1, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Honesty Rating", 
+       title= "Honesty Ratings for Accurate Responses Only") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_accurate1_bw
+```
+```{r}
+###ACCURATE ONLY GRAPH
+
+accurate_long_o$answer <- factor(accurate_long_o$answer, levels = c("Scam", "Donation", "Neutral"))
+
+stand_honesty_accurate_o <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.151, .148, .162, .272, .171, .176) 
+)
+
+colnames(accurate_long_o)[colnames(accurate_long_o) == 'condition'] <- 'Time'
+
+average_accurate_o <- accurate_long_o %>% 
+  group_by(answer, Time) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_accurate_o$Time <- factor(average_accurate_o$Time, levels = c("Pre", "Post"))
+
+figure_accurate_1_o<- merge(average_accurate_o, stand_honesty_accurate_o, by=c("answer","Time"))
+
+figure_accurate1_o <- ggplot(data=figure_accurate_1_o, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings for Accurate Responses Only") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_accurate1_o
+
+figure_accurate1_o_bw <- ggplot(data=figure_accurate_1_o, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Honesty Rating", 
+       title= "Honesty Ratings for Accurate Responses Only") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_accurate1_o_bw
+```
+
+
+```{r}
+###INACCURATE ONLY
+
+inaccurate_only <- honesty_4 %>% subset(accurate == 0)
+
+inaccurate_only<- inaccurate_only %>%
+  select(ID, answer, condition, Response.post1_JOL)
+
+inaccurate_long <- inaccurate_only
+
+inaccurate_only$answercond <- str_c(inaccurate_only$answer,'',inaccurate_only$condition)
+
+
+
+inaccurate_only <- inaccurate_only %>%
+  select(ID, answercond, Response.post1_JOL)
+
+#calculates mean rt for each condition of each subject
+inaccurate_only_1 <- aggregate(inaccurate_only$Response.post1_JOL,
+                     by = list(inaccurate_only$ID,
+                               inaccurate_only$answercond),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(inaccurate_only_1) <- c("ID", "condition", "JOL")
+#orders the data by subject
+inaccurate_only_1 <- inaccurate_only_1[order(inaccurate_only_1$ID), ]
+#spreads out the conditions into different columns and includes their reaction times
+inaccurate_only_1<-spread(inaccurate_only_1, condition, JOL)
+
+#donation<- honesty %>%
+#  select(Subject, DonationPre, DonationPost)
+
+
+
+#writes a csv to be used in JASP
+write.csv(inaccurate_only_1, file= "inaccurate_only_AMST_young_no_ex.csv")
+```
+
+```{r}
+###INACCURATE ONLY
+
+inaccurate_only_o <- honesty_4_o %>% subset(accurate == 0)
+
+inaccurate_only_o<- inaccurate_only_o %>%
+  select(ID, answer, condition, Response.post1_JOL)
+
+inaccurate_long_o <- inaccurate_only_o
+
+inaccurate_only_o$answercond <- str_c(inaccurate_only_o$answer,'',inaccurate_only_o$condition)
+
+
+
+inaccurate_only_o <- inaccurate_only_o %>%
+  select(ID, answercond, Response.post1_JOL)
+
+#calculates mean rt for each condition of each subject
+inaccurate_only_1_o <- aggregate(inaccurate_only_o$Response.post1_JOL,
+                     by = list(inaccurate_only_o$ID,
+                               inaccurate_only_o$answercond),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(inaccurate_only_1_o) <- c("ID", "condition", "JOL")
+#orders the data by subject
+inaccurate_only_1_o <- inaccurate_only_1_o[order(inaccurate_only_1_o$ID), ]
+#spreads out the conditions into different columns and includes their reaction times
+inaccurate_only_1_o<-spread(inaccurate_only_1_o, condition, JOL)
+
+#donation<- honesty %>%
+#  select(Subject, DonationPre, DonationPost)
+
+
+
+#writes a csv to be used in JASP
+write.csv(inaccurate_only_1_o, file= "inaccurate_only_AMST_older_no_ex.csv")
+```
+
+```{r}
+###INACCURATE ONLY GRAPH
+
+inaccurate_long$answer <- factor(inaccurate_long$answer, levels = c("Scam", "Donation", "Neutral"))
+
+stand_honesty_inaccurate <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.200, .209, .204, .257, .164, .190) 
+)
+
+colnames(inaccurate_long)[colnames(inaccurate_long) == 'condition'] <- 'Time'
+
+average_inaccurate <- inaccurate_long %>% 
+  group_by(answer, Time) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_inaccurate$Time <- factor(average_inaccurate$Time, levels = c("Pre", "Post"))
+
+figure_inaccurate_1<- merge(average_inaccurate, stand_honesty_inaccurate, by=c("answer","Time"))
+
+figure_inaccurate1 <- ggplot(data=figure_inaccurate_1, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings for Inaccurate Responses Only") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_inaccurate1
+
+figure_inaccurate1_bw <- ggplot(data=figure_inaccurate_1, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Honesty Rating", 
+       title= "Honesty Ratings for Inaccurate Responses Only") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_inaccurate1_bw
+```
+
+```{r}
+###INACCURATE ONLY GRAPH
+
+inaccurate_long_o$answer <- factor(inaccurate_long_o$answer, levels = c("Scam", "Donation", "Neutral"))
+
+stand_honesty_inaccurate_o <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.161, .185, .170, .198, .170, .203)
+)
+
+colnames(inaccurate_long_o)[colnames(inaccurate_long_o) == 'condition'] <- 'Time'
+
+average_inaccurate_o <- inaccurate_long_o %>% 
+  group_by(answer, Time) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_inaccurate_o$Time <- factor(average_inaccurate_o$Time, levels = c("Pre", "Post"))
+
+figure_inaccurate_1_o<- merge(average_inaccurate_o, stand_honesty_inaccurate_o, by=c("answer","Time"))
+
+figure_inaccurate1_o <- ggplot(data=figure_inaccurate_1_o, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings for Inaccurate Responses Only") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_inaccurate1_o
+
+figure_inaccurate1_o_bw <- ggplot(data=figure_inaccurate_1_o, aes(x=answer, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Honesty Rating", 
+       title= "Honesty Ratings for Inaccurate Responses Only") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_inaccurate1_o_bw
+```
+
+
+```{r}
+honesty$agegroup <- 'Young'
+honesty_o$agegroup <- 'Older'
+
+honesty_all <- rbind(honesty, honesty_o)
+write.csv(honesty_all, file= "AMST_honesty_all_no_ex.csv")
+
+honesty_3$agegroup <- 'Young'
+honesty_3_o$agegroup <- 'Older'
+honesty_all_3 <- rbind(honesty_3, honesty_3_o)
+```
+
+```{r}
+honesty_all_3$answer <- factor(honesty_all_3$answer, levels = c("Scam", "Donation", "Neutral", "None"))
+
+stand_honesty_all <- data.frame(
+  answer=c("Donation", "Donation", "Scam", "Scam", "Neutral", "Neutral", "None", "None"),
+  Time = c("Pre", "Post", "Pre", "Post", "Pre", "Post", "Pre", "Post"),
+  sd=c(.832,1.31, 1.08, 1.44, 1.10, 1.00, 1.05,1.06) ##UPDATE
+)
+
+colnames(honesty_all_3)[colnames(honesty_all_3) == 'condition'] <- 'Time'
+
+average_honesty_all <- honesty_all_3 %>% 
+  group_by(answer, Time, agegroup) %>% summarise_at(vars(Response.post1_JOL), list(Response.post1_JOL = mean))
+
+average_honesty_all$answerage <- str_c(average_honesty_all$answer, '', average_honesty_all$agegroup)
+
+average_honesty_all$Time <- factor(average_honesty_all$Time, levels = c("Pre", "Post"))
+
+#figure_honesty_1_all<- merge(average_honesty_all, stand_honesty_all, by=c("answer","Time"))
+
+figure_honesty1_all2 <- ggplot(average_honesty_all, aes(x=answerage, y=Response.post1_JOL, fill=Time)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = TRUE)) +
+  labs(x = "Condition", y = "Honesty Rating", 
+       title= "Honesty Ratings") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  #geom_errorbar(aes(ymin=Response.post1_JOL-sd, ymax=Response.post1_JOL+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_honesty1_all2
+```
+```{r}
+#joining confidence ratings
+confidence_4$agegroup <- 'Young'
+confidence_4_o$agegroup <- 'Older'
+
+confidence_all <- rbind(confidence_4, confidence_4_o)
+write.csv(confidence_all, file= "AMST_confidence_all_no_ex.csv")
+
+confidence_3$agegroup <- 'Young'
+confidence_3_o$agegroup <- 'Older'
+
+confidence_all_long <- rbind(confidence_3, confidence_3_o)
+write.csv(confidence_all_long, file= "AMST_confidence_all_long_no_ex.csv")
+
+
+#graph
+stand_confidence_all <- data.frame(
+  condition=c("Donation", "Neutral", "Scam", "Donation", "Neutral", "Scam"),
+  agegroup = c("Young", "Young", "Young", "Older", "Older", "Older"),
+  sd=c(.190, .191, .204, .219, .216, .245)
+)
+
+
+average_confidence_all <- confidence_all_long %>% 
+  group_by(condition, agegroup) %>% summarise_at(vars(confidence), list(confidence = mean))
+
+#average_$Time <- factor(average_honesty_o$Time, levels = c("Pre", "Post"))
+
+figure_confidence_1_all<- merge(average_confidence_all, stand_confidence_all, by=c("condition","agegroup"))
+
+figure_confidence_1_all$agegroup <- factor(figure_confidence_1_all$agegroup, levels = c("Young", "Older"))
+
+colnames(figure_confidence_1_all)[colnames(figure_confidence_1_all) == 'agegroup'] <- 'Age'
+
+
+figure_confidence_all <- ggplot(data=figure_confidence_1_all, aes(x=condition, y=confidence, fill=Age)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Confidence", 
+       title= "Confidence Ratings") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=confidence-sd, ymax=confidence+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,11)
+
+figure_confidence_all
+
+figure_confidence_all_2 <- ggplot(data=figure_confidence_1_all, aes(x=condition, y=confidence, fill=Age)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Confidence", 
+       title= "Confidence Ratings") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=confidence-sd, ymax=confidence+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,10)
+
+figure_confidence_all_2
+
+```
+```{r}
+##accurate only
+accurate_only_1$agegroup <- 'Young'
+accurate_only_1_o$agegroup <- 'Older'
+
+accurate_only_all <- rbind(accurate_only_1, accurate_only_1_o)
+write.csv(accurate_only_all, file= "AMST_accurate_only_all_no_ex.csv")
+```
+
+```{r}
+##accurate only
+inaccurate_only_1$agegroup <- 'Young'
+inaccurate_only_1_o$agegroup <- 'Older'
+
+inaccurate_only_all <- rbind(inaccurate_only_1, inaccurate_only_1_o)
+write.csv(inaccurate_only_all, file= "AMST_inaccurate_only_all_no_ex.csv")
+```
+
+
+```{r}
+#joining accuracy ratings
+average_wide<-spread(figure1, answer, averagecorrect)
+average_wide_o<-spread(figure1_o, answer, averagecorrect)
+
+
+average_wide$agegroup <- 'Young'
+average_wide_o$agegroup <- 'Older'
+
+average_all <- rbind(average_wide, average_wide_o)
+write.csv(average_all, file= "AMST_average_all_no_ex.csv")
+
+figure1$agegroup <- 'Young'
+figure1_o$agegroup <- 'Older'
+
+average_long_all <- rbind(figure1, figure1_o)
+write.csv(average_long_all, file= "AMST_average_all_long_no_ex.csv")
+
+
+#graph
+stand_average_all <- data.frame(
+  answer=c("Donation", "Neutral", "Scam", "Donation", "Neutral", "Scam"),
+  agegroup = c("Young", "Young", "Young", "Older", "Older", "Older"),
+  sd=c(.0285, .0298, .0241, .0246, .0307, .0269)
+)
+
+
+average_average_all <- average_long_all %>% 
+  group_by(answer, agegroup) %>% summarise_at(vars(averagecorrect), list(averagecorrect = mean))
+
+#average_$Time <- factor(average_honesty_o$Time, levels = c("Pre", "Post"))
+
+figure_average_1_all<- merge(average_average_all, stand_average_all, by=c("answer","agegroup"))
+
+figure_average_1_all$agegroup <- factor(figure_average_1_all$agegroup, levels = c("Young", "Older"))
+figure_average_1_all$answer <- factor(figure_average_1_all$answer, levels = c("Scam", "Donation", "Neutral"))
+colnames(figure_average_1_all)[colnames(figure_average_1_all) == 'agegroup'] <- 'Age'
+
+
+figure_average_all <- ggplot(data=figure_average_1_all, aes(x=answer, y=averagecorrect, fill=Age)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Accuracy", 
+       title= "Accuracy") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=averagecorrect-sd, ymax=averagecorrect+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,1)
+
+figure_average_all
+
+figure_average_all_2 <- ggplot(data=figure_average_1_all, aes(x=answer, y=averagecorrect, fill=Age)) +
+geom_bar(stat="identity", position=position_dodge(), col = "black")+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Trial Type", y = "Proportion Correct", 
+       title= "Accuracy") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'),legend.direction = "horizontal",legend.position = c(0.6, 0.8))+
+  scale_fill_manual(values = c("black", "white"),name="")+ 
+#theme_classic() +
+  geom_errorbar(aes(ymin=averagecorrect-sd, ymax=averagecorrect+sd), width=0.2, colour="gray27", position=position_dodge(.9)) +
+  ylim(0,1)
+
+figure_average_all_2
+
+```
+
+```{r}
+#incorrect confidence
+
+confidence_incorrect$agegroup <- 'Young'
+confidence_incorrect_o$agegroup <- 'Older'
+
+confidence_incorrect_all <- rbind(confidence_incorrect, confidence_incorrect_o)
+
+inaccurate_confidence_only_all <- confidence_incorrect_all %>% subset(accurate == 0)
+
+inaccurate_confidence_only_all<- inaccurate_confidence_only_all %>%
+  select(ID, answer, Response.post1_JOL, agegroup)
+
+inaccurate_confidence_only_all <- aggregate(inaccurate_confidence_only_all$Response.post1_JOL,
+                     by = list(inaccurate_confidence_only_all$ID,
+                               inaccurate_confidence_only_all$answer,
+                               inaccurate_confidence_only_all$agegroup),
+                     FUN = 'mean')
+#pick out only certian columns
+colnames(inaccurate_confidence_only_all) <- c("Subject", "condition", "age","confidence")
+#orders the data by subject
+inaccurate_confidence_only_all <- inaccurate_confidence_only_all[order(inaccurate_confidence_only_all$Subject), ]
+
+write.csv(inaccurate_confidence_only_all, file= "AMST_inaccurate_confidence_only_all_no_ex.csv")
+
+#graph
+stand_incorrect_confidence_all <- data.frame(
+  condition=c("Donation", "Neutral", "Scam", "Donation", "Neutral", "Scam"),
+  age = c("Young", "Young", "Young", "Older", "Older", "Older"),
+  sd=c(.216, .220, .231, .259, .229, .460)
+)
+
+
+average_inaccurate_confidence_all <- inaccurate_confidence_only_all %>% 
+  group_by(condition, age) %>% summarise_at(vars(confidence), list(confidence = mean))
+
+#average_$Time <- factor(average_honesty_o$Time, levels = c("Pre", "Post"))
+
+figure_inaccurate_confidence_1_all<- merge(average_inaccurate_confidence_all, stand_incorrect_confidence_all, by=c("condition","age"))
+
+figure_inaccurate_confidence_1_all$age <- factor(figure_inaccurate_confidence_1_all$age, levels = c("Young", "Older"))
+
+colnames(figure_inaccurate_confidence_1_all)[colnames(figure_inaccurate_confidence_1_all) == 'age'] <- 'Age'
+
+figure_inaccurate_confidence_all <- ggplot(data=figure_inaccurate_confidence_1_all, aes(x=condition, y=confidence, fill=Age)) +
+geom_bar(stat="identity", position=position_dodge())+
+  guides(fill = guide_legend(reverse = FALSE)) +
+  labs(x = "Condition", y = "Confidence", 
+       title= "Incorrect Trials Confidence Ratings") +
+
+  scale_fill_brewer(palette="Paired")+
+theme_minimal() +
+  geom_errorbar(aes(ymin=confidence-sd, ymax=confidence+sd), width=0.2, colour="dark gray", position=position_dodge(.9)) +
+  ylim(0,11)
+
+figure_inaccurate_confidence_all
+```
+
+```{r}
+
+accuracy_confidence <- cbind(average_long_all, confidence_all_long)
+
+write.csv(accuracy_confidence, file= "AMST_accuracy_confidence_no_ex.csv")
+
+#cor(accuracy_confidence$averagecorrect, accuracy_confidence$confidence)
+
+accuracy_confidence_old <- subset(accuracy_confidence, accuracy_confidence$agegroup!= "Young")
+accuracy_confidence_young <- subset(accuracy_confidence, accuracy_confidence$agegroup!= "Older")
+
+write.csv(accuracy_confidence_old, file= "AMST_accuracy_confidence_no_ex_old.csv")
+write.csv(accuracy_confidence_young, file= "AMST_accuracy_confidence_no_ex_young.csv")
+
+cor(accuracy_confidence_old$averagecorrect, accuracy_confidence_old$confidence)
+
+cor(accuracy_confidence_young$averagecorrect, accuracy_confidence_young$confidence)
+cor(accuracy_confidence_young$averagecorrect, accuracy_confidence_young$confidence)
+
+accuracy_confidence_all <- rbind(accuracy_confidence_young, accuracy_confidence_old)
+```
+
+```{r}
+confidence_accuracy_all <- rbind(accuracy_confidence_young, accuracy_confidence_old)
+
+confidence_accuracy_all <- mutate(confidence_accuracy_all, 
+                 confidence_group = case_when(confidence <= 2 ~ "0-2", 
+                                           confidence > 2 & confidence <= 4 ~ "2.1-4", 
+                                           confidence > 4 & confidence <=6 ~ "4.1-6"),
+                                            confidence > 6 & confidence <= 8 ~ "6.1-8",
+                                            confidence > 8  ~ "8.1-10")
+
+correlation_all <- ggplot(confidence_accuracy_all, aes(x=confidence, y=averagecorrect, color = agegroup)) + geom_point()+
+  geom_smooth(method=lm)+
+  labs(x = "Confidence Level", y = "Proportion Correct") +
+  theme(text=element_text(size=16,  family="Times New Roman"), panel.background = element_rect(fill='transparent'))+
+  guides(color = guide_legend(reverse = TRUE, title = "Age")) +
+  scale_color_manual(values = c("#0066CC", "#CC0066"))+
+  scale_fill_manual(values = c("#0066CC", "#CC0066"))+
+#theme_classic() +  +
+  ylim(0,1)
+
+correlation_all
+```
+
